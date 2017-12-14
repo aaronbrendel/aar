@@ -179,6 +179,20 @@ end
 #     cur.execute("GRANT CREATE,INSERT,DELETE,UPDATE,SELECT on AARdb.* to aarapp@localhost")
 #     cur.close()
 #     db.close()#
+passwords= data_bag_item('passwords', 'mysql')
+
+mysql_client 'default' do
+	action :create
+end
+
+mysql_service 'default' do
+	initial_root_password passwords['root_password']
+	action [:create, :start]
+end
+
+
+
+
 python 'import db' do
 not_if 'sudo mysql "AARdb" >/dev/null 2>&1 </dev/null'
 code <<-EOH
